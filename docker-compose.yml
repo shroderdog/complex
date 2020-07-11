@@ -1,0 +1,40 @@
+version: '3'
+services: 
+    postgres:
+        image: 'postgres:12-alpine'
+        environment: 
+            - POSTGRES_PASSWORD=postgres_password
+    redis:
+        image: 'redis:alpine'
+    server: 
+        build: 
+            dockerfile: Dockerfile.dev
+            context: ./server
+        volumes: 
+            - /srv/node_modules
+            - ./server:/srv
+        environment: 
+            - REDIS_HOST=redis
+            - REDIS_PORT=6379
+            - PGUSER=postgres
+            - PGHOST=postgres
+            - PGDATABASE=postgres
+            - PGPASSWORD=postgres_password
+            - PGPORT=5432
+    client: 
+        build: 
+            dockerfile: Dockerfile.dev
+            context: ./client
+        volumes: 
+            - /srv/node_modules
+            - ./client:/srv
+    worker: 
+        build: 
+            dockerfile: Dockerfile.dev
+            context: ./worker
+        volumes: 
+            - /srv/node_modules
+            - ./worker:/srv
+    nginx:
+        image: nginx:alpine
+        
