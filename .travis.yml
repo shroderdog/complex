@@ -4,18 +4,21 @@ services:
   - docker
 
 before_install:
-  - docker build -t shroderdog/complex -f Dockerfile.dev .
+  - docker build -t shroderdog/complex -f ./client/Dockerfile.dev ./client
 
 script:
-  - docker run -e CI=true shroderdog/complex npm test
-deploy:
-  provider: elasticbeanstalk
-  region: us-east-1
-  app: "node-react"
-  env: "NodeReact-env"
-  bucket_name: "elasticbeanstalk-us-east-1-764430996326"
-  bucket_path: "node-react"
-  on:
-    branch: master
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
+  - docker run -e CI=true shroderdog/complex npm test -- --coverage
+
+after_success:
+  - docker build -t shroderdog/complex-client ./client 
+  - docker build -t shroderdog/complex-nginx ./nginx
+  - docker build -t shroderdog/complex-server ./server 
+  - docker build -t shroderdog/complex-worker ./worker 
+  # Docker login
+  - echo "$docker_pass" | docker login -u "$docker_user" --password-stdin
+  # Docker push
+  - docker push shroderdog/complex-client
+  - docker push shroderdog/complex-nginx
+  - docker push shroderdog/complex-server
+  - docker push shroderdog/complex-worker
+
