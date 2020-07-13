@@ -22,15 +22,15 @@ after_success:
   - docker push shroderdog/complex-server
   - docker push shroderdog/complex-worker
 
-deploy:
-  edge: true
-  provider: elasticbeanstalk
-  region: us-east-2
-  app: "complex-nginx"
-  env: "ComplexNginx-env"
-  bucket_name: "elasticbeanstalk-us-east-2-190819126545"
-  bucket_path: "complex-nginx"
-  on:
-    branch: master
-  access_key_id: $AWS_ACCESS_KEY
-  secret_access_key: $AWS_SECRET_KEY
+# deploy:
+#   edge: true
+#   provider: elasticbeanstalk
+#   region: us-east-2
+#   app: "complex-nginx"
+#   env: "ComplexNginx-env"
+#   bucket_name: "elasticbeanstalk-us-east-2-190819126545"
+#   bucket_path: "complex-nginx"
+#   on:
+#     branch: master
+#   access_key_id: $AWS_ACCESS_KEY
+#   secret_access_key: $AWS_SECRET_KEY
